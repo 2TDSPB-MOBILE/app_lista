@@ -1,7 +1,8 @@
+import "package:app_lista/models/tarefa.dart";
 import "package:flutter/material.dart";
 import "package:app_lista/widgets/tarefa_list_item.dart";
 
-List<String> listTarefas = [];
+List<Tarefa> listTarefas = [];
 
 final TextEditingController tarefaController = TextEditingController();
 
@@ -42,7 +43,11 @@ class _TodoListPageState extends State<TodoListPage> {
                       onPressed: (){
                         String text = tarefaController.text;
                         setState(() {
-                          listTarefas.add(text);
+                          Tarefa newTarefa = Tarefa(
+                            titulo: text,
+                            dateTime: DateTime.now()
+                          );
+                          listTarefas.add(newTarefa);
                         });
                         tarefaController.clear();
                       }, 
@@ -62,8 +67,10 @@ class _TodoListPageState extends State<TodoListPage> {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      for(String tarefa in listTarefas)
-                        TarefaListItem()
+                      for(Tarefa tarefa in listTarefas)
+                        TarefaListItem(
+                          tarefa: tarefa,
+                        )
                     ],
                   ),
                 ),
@@ -71,7 +78,7 @@ class _TodoListPageState extends State<TodoListPage> {
                   children: [
                     Expanded(
                       child: Text(
-                        "Você possui 0 tarefas pendentes")
+                        "Você possui ${listTarefas.length} tarefas pendentes")
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
