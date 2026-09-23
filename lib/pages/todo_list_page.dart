@@ -70,6 +70,7 @@ class _TodoListPageState extends State<TodoListPage> {
                       for(Tarefa tarefa in listTarefas)
                         TarefaListItem(
                           tarefa: tarefa,
+                          onDelete:onDelete
                         )
                     ],
                   ),
@@ -99,5 +100,10 @@ class _TodoListPageState extends State<TodoListPage> {
         ),
       )
     );
+  }
+  void onDelete(Tarefa tarefa){
+    setState(() {
+      listTarefas.remove(tarefa);
+    });
   }
 }
