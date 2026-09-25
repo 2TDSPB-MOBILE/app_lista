@@ -3,6 +3,9 @@ import "package:flutter/material.dart";
 import "package:app_lista/widgets/tarefa_list_item.dart";
 
 List<Tarefa> listTarefas = [];
+Tarefa? deletedTarefa;
+int? deletedTarefaPos;
+
 
 final TextEditingController tarefaController = TextEditingController();
 
@@ -85,7 +88,7 @@ class _TodoListPageState extends State<TodoListPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xffa1250d)
                       ),
-                      onPressed: (){},
+                      onPressed: showDeleteTarefasConfirmationDialog,
                       child: Text(
                         "Limpar Tudo",
                         style: TextStyle(color: Colors.white),
@@ -102,8 +105,57 @@ class _TodoListPageState extends State<TodoListPage> {
     );
   }
   void onDelete(Tarefa tarefa){
+    deletedTarefa = tarefa;
+    deletedTarefaPos = listTarefas.indexOf(tarefa);
+
     setState(() {
       listTarefas.remove(tarefa);
     });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: 
+        Text("Tarefa ${tarefa.titulo} foi removida.",
+        style: TextStyle(color: Colors.black),
+      ),
+      backgroundColor: Colors.blue[200],
+      
+      duration: Duration(seconds: 3),
+      action: SnackBarAction(         
+        backgroundColor: Colors.green,
+        label: "Desfazer",
+        textColor: Colors.red,
+        onPressed: (){
+          setState(() {
+            listTarefas.insert(deletedTarefaPos!, deletedTarefa!);
+          });          
+        },
+      ),      
+      )
+    );
+  }
+
+  void showDeleteTarefasConfirmationDialog(){
+    showDialog(
+      context: context, 
+      builder: (context)=>AlertDialog(
+        title: Text("Limpar Tudo!!!"),
+        content: Text("Tem certeza que deseja apagar todas as tarefas?"),
+        actions: [
+          TextButton(
+            onPressed: (){
+              Navigator.of(context).pop();
+            }, 
+            child: Text("Cancelar")
+          ),
+          TextButton(
+            onPressed: (){},
+            child: Text("Limpar Tudo"),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red
+            ),
+          ),
+        ],
+      ));
   }
 }
