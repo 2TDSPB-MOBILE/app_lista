@@ -6,12 +6,10 @@ List<Tarefa> listTarefas = [];
 Tarefa? deletedTarefa;
 int? deletedTarefaPos;
 
-
 final TextEditingController tarefaController = TextEditingController();
 
-
 class TodoListPage extends StatefulWidget {
-  const TodoListPage ({super.key});  
+  const TodoListPage({super.key});
 
   @override
   State<TodoListPage> createState() => _TodoListPageState();
@@ -31,50 +29,43 @@ class _TodoListPageState extends State<TodoListPage> {
                 Row(
                   children: [
                     Expanded(
-                      flex:2,
-                      child: TextField(   
-                        controller: tarefaController,             
+                      flex: 2,
+                      child: TextField(
+                        controller: tarefaController,
                         decoration: InputDecoration(
                           labelText: "Adicione uma nota",
                           hintText: "Ex: Práticar Flutter",
-                          border:OutlineInputBorder(),
+                          border: OutlineInputBorder(),
                         ),
                       ),
                     ),
-                    SizedBox(width: 8,),
+                    SizedBox(width: 8),
                     ElevatedButton(
-                      onPressed: (){
+                      onPressed: () {
                         String text = tarefaController.text;
                         setState(() {
                           Tarefa newTarefa = Tarefa(
                             titulo: text,
-                            dateTime: DateTime.now()
+                            dateTime: DateTime.now(),
                           );
                           listTarefas.add(newTarefa);
                         });
                         tarefaController.clear();
-                      }, 
-                      child: Icon(
-                        Icons.add,
-                        size: 30,
-                        color: Colors.white,
-                      ),
+                      },
+                      child: Icon(Icons.add, size: 30, color: Colors.white),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.amber
+                        backgroundColor: Colors.amber,
                       ),
-                      )
+                    ),
                   ],
                 ),
-                SizedBox(height: 16,),
+                SizedBox(height: 16),
                 Flexible(
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      for(Tarefa tarefa in listTarefas)
-                        TarefaListItem(
-                          tarefa: tarefa,
-                          onDelete:onDelete
-                        )
+                      for (Tarefa tarefa in listTarefas)
+                        TarefaListItem(tarefa: tarefa, onDelete: onDelete),
                     ],
                   ),
                 ),
@@ -82,29 +73,30 @@ class _TodoListPageState extends State<TodoListPage> {
                   children: [
                     Expanded(
                       child: Text(
-                        "Você possui ${listTarefas.length} tarefas pendentes")
+                        "Você possui ${listTarefas.length} tarefas pendentes",
+                      ),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xffa1250d)
+                        backgroundColor: Color(0xffa1250d),
                       ),
                       onPressed: showDeleteTarefasConfirmationDialog,
                       child: Text(
                         "Limpar Tudo",
                         style: TextStyle(color: Colors.white),
-                      )
-                      )
+                      ),
+                    ),
                   ],
-                ),           
-        
+                ),
               ],
-            ),          
+            ),
           ),
         ),
-      )
+      ),
     );
   }
-  void onDelete(Tarefa tarefa){
+
+  void onDelete(Tarefa tarefa) {
     deletedTarefa = tarefa;
     deletedTarefaPos = listTarefas.indexOf(tarefa);
 
@@ -114,48 +106,55 @@ class _TodoListPageState extends State<TodoListPage> {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: 
-        Text("Tarefa ${tarefa.titulo} foi removida.",
-        style: TextStyle(color: Colors.black),
+        content: Text(
+          "Tarefa ${tarefa.titulo} foi removida.",
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.blue[200],
+
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          backgroundColor: Colors.green,
+          label: "Desfazer",
+          textColor: Colors.red,
+          onPressed: () {
+            setState(() {
+              listTarefas.insert(deletedTarefaPos!, deletedTarefa!);
+            });
+          },
+        ),
       ),
-      backgroundColor: Colors.blue[200],
-      
-      duration: Duration(seconds: 3),
-      action: SnackBarAction(         
-        backgroundColor: Colors.green,
-        label: "Desfazer",
-        textColor: Colors.red,
-        onPressed: (){
-          setState(() {
-            listTarefas.insert(deletedTarefaPos!, deletedTarefa!);
-          });          
-        },
-      ),      
-      )
     );
   }
 
-  void showDeleteTarefasConfirmationDialog(){
+  void showDeleteTarefasConfirmationDialog() {
     showDialog(
-      context: context, 
-      builder: (context)=>AlertDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         title: Text("Limpar Tudo!!!"),
         content: Text("Tem certeza que deseja apagar todas as tarefas?"),
         actions: [
           TextButton(
-            onPressed: (){
+            onPressed: () {
               Navigator.of(context).pop();
-            }, 
-            child: Text("Cancelar")
+            },
+            child: Text("Cancelar"),
           ),
           TextButton(
-            onPressed: (){},
+            onPressed: () {
+              Navigator.of(context).pop();
+              deleteTodasTarefas();
+            },
             child: Text("Limpar Tudo"),
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.red
-            ),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
           ),
         ],
-      ));
+      ),
+    );
+  }
+  void deleteTodasTarefas() {
+    setState(() {
+      listTarefas.clear(); //Limpa tudo da lista
+    });
   }
 }
