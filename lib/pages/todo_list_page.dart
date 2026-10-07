@@ -1,11 +1,13 @@
 import "package:app_lista/models/tarefa.dart";
 import "package:flutter/material.dart";
 import "package:app_lista/widgets/tarefa_list_item.dart";
+import "package:app_lista/repositories/tarefa_repository.dart";
 
 List<Tarefa> listTarefas = [];
 Tarefa? deletedTarefa;
 int? deletedTarefaPos;
 
+final TarefaRepository tarefaRepository = TarefaRepository();
 final TextEditingController tarefaController = TextEditingController();
 
 class TodoListPage extends StatefulWidget {
@@ -16,6 +18,16 @@ class TodoListPage extends StatefulWidget {
 }
 
 class _TodoListPageState extends State<TodoListPage> {
+  @override
+  void initState(){
+    super.initState();
+    tarefaRepository.getListaTarefas().then((value){
+      setState(() {
+        listTarefas = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,6 +62,7 @@ class _TodoListPageState extends State<TodoListPage> {
                           );
                           listTarefas.add(newTarefa);
                         });
+                        tarefaRepository.saveListaTarefas(listTarefas);
                         tarefaController.clear();
                       },
                       child: Icon(Icons.add, size: 30, color: Colors.white),
