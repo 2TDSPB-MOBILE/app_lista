@@ -6,6 +6,7 @@ import "package:app_lista/repositories/tarefa_repository.dart";
 List<Tarefa> listTarefas = [];
 Tarefa? deletedTarefa;
 int? deletedTarefaPos;
+String? errorText;
 
 final TarefaRepository tarefaRepository = TarefaRepository();
 final TextEditingController tarefaController = TextEditingController();
@@ -47,6 +48,7 @@ class _TodoListPageState extends State<TodoListPage> {
                         decoration: InputDecoration(
                           labelText: "Adicione uma nota",
                           hintText: "Ex: Práticar Flutter",
+                          errorText: errorText,
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -55,6 +57,12 @@ class _TodoListPageState extends State<TodoListPage> {
                     ElevatedButton(
                       onPressed: () {
                         String text = tarefaController.text;
+                        if(text.isEmpty){
+                          setState(() {
+                            errorText="O título não pode ser vazio";
+                          });
+                          return;
+                        }
                         setState(() {
                           Tarefa newTarefa = Tarefa(
                             titulo: text,
@@ -116,6 +124,7 @@ class _TodoListPageState extends State<TodoListPage> {
     setState(() {
       listTarefas.remove(tarefa);
     });
+    tarefaRepository.saveListaTarefas(listTarefas);
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -134,6 +143,7 @@ class _TodoListPageState extends State<TodoListPage> {
             setState(() {
               listTarefas.insert(deletedTarefaPos!, deletedTarefa!);
             });
+            tarefaRepository.saveListaTarefas(listTarefas);
           },
         ),
       ),
@@ -169,5 +179,6 @@ class _TodoListPageState extends State<TodoListPage> {
     setState(() {
       listTarefas.clear(); //Limpa tudo da lista
     });
+    tarefaRepository.saveListaTarefas(listTarefas);
   }
 }
