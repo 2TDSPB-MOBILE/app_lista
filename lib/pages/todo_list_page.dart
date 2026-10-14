@@ -2,6 +2,7 @@ import "package:app_lista/models/tarefa.dart";
 import "package:flutter/material.dart";
 import "package:app_lista/widgets/tarefa_list_item.dart";
 import "package:app_lista/repositories/tarefa_repository.dart";
+import "package:app_lista/pages/configuracoes_page.dart";
 
 List<Tarefa> listTarefas = [];
 Tarefa? deletedTarefa;
@@ -109,6 +110,15 @@ class _TodoListPageState extends State<TodoListPage> {
                     ),
                   ],
                 ),
+                ElevatedButton(
+                  onPressed:(){
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context)=>ConfiguracoesPage()
+                        )
+                    );
+                  },
+                  child: Text("Configurações"))
               ],
             ),
           ),

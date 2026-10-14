@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_lista/pages/todo_list_page.dart';
-
+import 'package:app_lista/pages/home_page.dart';
 void main(){
   runApp(MyApp());
 }
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: TodoListPage(),
+      home: HomePage(),
     );
   }
 }
